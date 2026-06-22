@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:       #0c0f18;
+  --ink-2:     #141820;
+  --ink-3:     #1c2230;
+  --ink-4:     #242b3a;
+  --rule:      rgba(255,255,255,0.07);
+  --rule-2:    rgba(255,255,255,0.12);
+  --text:      #e8ecf4;
+  --text-2:    #8b96b0;
+  --text-3:    #4a5470;
+  --amber:     #e8a245;
+  --amber-dim: rgba(232,162,69,0.12);
+  --amber-glow:rgba(232,162,69,0.25);
+  --teal:      #3dcfb0;
+  --teal-dim:  rgba(61,207,176,0.1);
+  --rose:      #e8607a;
+  --rose-dim:  rgba(232,96,122,0.1);
+  --blue:      #5b8ef0;
+  --blue-dim:  rgba(91,142,240,0.1);
+  --gold:      #c8943a;
+  --mono:      'DM Mono', monospace;
+  --sans:      'DM Sans', sans-serif;
+  --r:         10px;
+  --r-sm:      6px;
+}
+
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ─────────────────────────────────────── */
+header {
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  height: 52px;
+  border-bottom: 1px solid var(--rule);
+  position: sticky;
+  top: 0;
+  background: rgba(12,15,24,0.95);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  gap: 4px;
+}
+
+.wordmark {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  margin-right: 20px;
+  text-decoration: none;
+}
+.wordmark em { color: var(--amber); font-style: normal; }
+
+.nav-link {
+  font-size: 13px;
+  color: var(--text-2);
+  text-decoration: none;
+  padding: 5px 12px;
+  border-radius: 20px;
+  transition: all 0.15s;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--sans);
+}
+.nav-link:hover { background: var(--ink-3); color: var(--text); }
+.nav-link.active { color: var(--amber); background: var(--amber-dim); }
+
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--amber), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 12px; font-weight: 500;
+  color: var(--ink); cursor: pointer;
+}
+
+/* ── LAYOUT ──────────────────────────────────────── */
+.page { display: none; flex: 1; flex-direction: column; }
+.page.active { display: flex; }
+
+/* ── NAME PROMPT ─────────────────────────────────── */
+#name-prompt {
+  position: fixed; inset: 0;
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 500;
+  padding: 24px;
+}
+.name-card {
+  width: 100%; max-width: 440px;
+  text-align: center;
+}
+.name-wordmark {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.name-wordmark em { color: var(--amber); font-style: normal; }
+.name-sub {
+  font-size: 14px;
+  color: var(--text-2);
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+.name-input {
+  width: 100%;
+  background: var(--ink-2);
+  border: 1px solid var(--rule-2);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  font-family: var(--sans);
+  font-size: 16px;
+  color: var(--text);
+  outline: none;
+  margin-bottom: 12px;
+  transition: border-color 0.15s;
+  text-align: center;
+}
+.name-input:focus { border-color: var(--amber); }
+.name-input::placeholder { color: var(--text-3); }
+.btn-primary {
+  background: var(--amber);
+  color: var(--ink);
+  border: none;
+  border-radius: var(--r);
+  padding: 13px 28px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  width: 100%;
+}
+.btn-primary:hover { opacity: 0.9; }
+
+/* ── HOME ────────────────────────────────────────── */
+.home-inner {
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 56px 32px;
+}
+.home-date {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.date-box {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  padding: 4px 10px;
+  text-align: center;
+  font-family: var(--mono);
+}
+.date-box .mo { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber); }
+.date-box .dy { font-size: 20px; font-weight: 500; line-height: 1.1; }
+.home-title { font-size: 24px; font-weight: 500; letter-spacing: -0.3px; }
+.home-sub { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin: 40px 0 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+
+.home-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.home-card {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  padding: 28px 24px;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.home-card:hover { border-color: var(--rule-2); transform: translateY(-2px); }
+.home-card.featured {
+  border-color: var(--amber-dim);
+  background: linear-gradient(135deg, rgba(232,162,69,0.06) 0%, var(--ink-2) 60%);
+}
+.home-card.featured:hover { border-color: var(--amber-glow); }
+
+.card-icon {
+  font-size: 28px;
+  margin-bottom: 16px;
+  display: block;
+}
+.card-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+.card-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+.card-desc { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+
+/* ── EXPLORE ─────────────────────────────────────── */
+.explore-inner {
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+.page-title { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 6px; }
+.page-sub { font-size: 13px; color: var(--text-2); margin-bottom: 32px; }
+
+.track-list { display: flex; flex-direction: column; gap: 10px; }
+
+.track-row {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--amber);
+  border-radius: var(--r);
+  padding: 20px 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: border-color 0.15s, background 0.15s;
+  text-decoration: none;
+  color: inherit;
+}
+.track-row:hover { background: var(--ink-3); border-color: var(--rule-2); border-left-color: var(--amber); }
+.track-row.lang-python  { border-left-color: var(--blue); }
+.track-row.lang-ts      { border-left-color: #3178c6; }
+.track-row.lang-rust    { border-left-color: var(--rose); }
+.track-row.lang-go      { border-left-color: var(--teal); }
+.track-row.lang-multi   { border-left-color: var(--amber); }
+
+.track-emoji { font-size: 22px; flex-shrink: 0; }
+.track-info { flex: 1; min-width: 0; }
+.track-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.track-meta { font-size: 11px; color: var(--text-2); }
+.track-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--ink-4);
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+.track-arrow { color: var(--text-3); font-size: 16px; flex-shrink: 0; }
+
+/* ── TRACK PAGE ──────────────────────────────────── */
+.track-page-inner {
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+
+.breadcrumb {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.breadcrumb a {
+  color: var(--text-2);
+  text-decoration: none;
+  cursor: pointer;
+}
+.breadcrumb a:hover { color: var(--text); }
+
+.track-header {
+  margin-bottom: 36px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--rule);
+}
+.track-header-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+.track-header-title {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+.track-header-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.7;
+  max-width: 580px;
+}
+.track-stats {
+  display: flex;
+  gap: 20px;
+  margin-top: 16px;
+}
+.track-stat {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+.track-stat span { color: var(--text-2); }
+
+/* lesson list */
+.lesson-list { display: flex; flex-direction: column; gap: 8px; }
+
+.lesson-row {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.lesson-row.current { border-color: rgba(232,162,69,0.3); }
+.lesson-row.locked { opacity: 0.4; }
+.lesson-row.done { border-left: 3px solid var(--teal); }
+
+.lesson-header-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  cursor: pointer;
+}
+.lesson-row.locked .lesson-header-row { cursor: default; }
+
+.lesson-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+  width: 28px;
+  flex-shrink: 0;
+}
+.lesson-title-text { font-size: 13px; font-weight: 500; flex: 1; }
+.lesson-status {
+  font-size: 11px;
+  font-family: var(--mono);
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.status-done    { background: var(--teal-dim);  color: var(--teal); }
+.status-current { background: var(--amber-dim); color: var(--amber); }
+.status-locked  { background: var(--ink-4);     color: var(--text-3); }
+.lesson-chevron { color: var(--text-3); font-size: 11px; transition: transform 0.2s; }
+.lesson-row.open .lesson-chevron { transform: rotate(180deg); }
+
+/* lesson body — the index-card style */
+.lesson-body {
+  display: none;
+  border-top: 1px solid var(--rule);
+}
+.lesson-row.open .lesson-body { display: block; }
+
+.concept-section {
+  padding: 24px 20px;
+  background: var(--ink-3);
+  border-bottom: 1px solid var(--rule);
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.8;
+}
+.concept-section strong { color: var(--text); }
+.concept-section code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--amber);
+}
+.concept-section pre {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--amber);
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 12px 0;
+  white-space: pre;
+}
+
+.exercises-section { padding: 20px; }
+.ex-heading {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+  margin-bottom: 14px;
+}
+
+.exercise {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.exercise-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+.ex-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--amber);
+  width: 20px;
+  flex-shrink: 0;
+}
+.ex-label { font-size: 13px; font-weight: 500; flex: 1; }
+.ex-diff {
+  font-size: 10px;
+  font-family: var(--mono);
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+.diff-1, .diff-2 { background: var(--teal-dim);  color: var(--teal); }
+.diff-3          { background: var(--amber-dim); color: var(--amber); }
+.diff-4, .diff-5 { background: var(--rose-dim);  color: var(--rose); }
+.ex-chev { font-size: 10px; color: var(--text-3); transition: transform 0.2s; }
+.exercise.open .ex-chev { transform: rotate(180deg); }
+
+.exercise-body {
+  display: none;
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--rule);
+}
+.exercise.open .exercise-body { display: block; }
+.ex-text {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.7;
+  margin: 12px 0;
+}
+.ex-text code {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--amber);
+}
+.ex-text pre {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--amber);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 10px 0;
+  white-space: pre;
+}
+.code-starter {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: #8b96b0;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+  margin-bottom: 10px;
+}
+textarea.answer {
+  width: 100%;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 90px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+textarea.answer:focus { border-color: var(--amber); }
+
+.lesson-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--rule);
+  background: var(--ink-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.lesson-footer p { font-size: 12px; color: var(--text-3); }
+.footer-btns { display: flex; gap: 8px; }
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--rule-2);
+  color: var(--text-2);
+  border-radius: var(--r-sm);
+  padding: 8px 16px;
+  font-family: var(--sans);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-ghost:hover { background: var(--ink-3); color: var(--text); }
+
+.btn-amber {
+  background: var(--amber);
+  border: none;
+  color: var(--ink);
+  border-radius: var(--r-sm);
+  padding: 8px 18px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-amber:hover { opacity: 0.88; }
+
+.grading-result {
+  margin: 12px 20px;
+  padding: 16px 18px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.grading-result.loading { background: var(--amber-dim); border: 1px solid var(--amber-glow); color: var(--amber); }
+.grading-result.success { background: var(--teal-dim);  border: 1px solid rgba(61,207,176,0.2); color: var(--text-2); }
+.grading-result.error   { background: var(--rose-dim);  border: 1px solid rgba(232,96,122,0.2); color: var(--text-2); }
+.spin {
+  display: inline-block;
+  width: 12px; height: 12px;
+  border: 2px solid var(--amber);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* ── CREATOR PAGE ────────────────────────────────── */
+.creator-inner {
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+
+.creator-input-wrap {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  padding: 28px;
+  margin-bottom: 32px;
+}
+.creator-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+  margin-bottom: 10px;
+}
+.creator-textarea {
+  width: 100%;
+  background: var(--ink-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+  resize: none;
+  outline: none;
+  transition: border-color 0.15s;
+  min-height: 100px;
+}
+.creator-textarea:focus { border-color: var(--amber); }
+.creator-input-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.creator-hint { font-size: 11px; color: var(--text-3); }
+
+.structure-section { margin-bottom: 32px; }
+.structure-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.structure-title { font-size: 15px; font-weight: 600; }
+.structure-sub { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+
+.week-block {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.week-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: background 0.15s;
+}
+.week-header:hover { background: var(--ink-3); }
+.week-block.open .week-header { border-bottom-color: var(--rule); background: var(--ink-3); }
+.week-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--amber);
+  width: 48px;
+  flex-shrink: 0;
+}
+.week-title-text { font-size: 13px; font-weight: 500; flex: 1; }
+.week-meta { font-size: 11px; color: var(--text-3); }
+.week-chev { font-size: 11px; color: var(--text-3); transition: transform 0.2s; }
+.week-block.open .week-chev { transform: rotate(180deg); }
+
+.week-body { display: none; padding: 12px 20px; }
+.week-block.open .week-body { display: block; }
+
+.day-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 13px;
+}
+.day-row:last-child { border-bottom: none; }
+.day-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-3);
+  width: 40px;
+  flex-shrink: 0;
+}
+.day-lang { font-weight: 500; width: 100px; flex-shrink: 0; }
+.day-concept { color: var(--text-2); flex: 1; font-size: 12px; }
+.day-edit {
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.day-edit:hover { border-color: var(--amber); color: var(--amber); }
+
+.publish-bar {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.publish-bar-text { font-size: 13px; color: var(--text-2); }
+.publish-bar-text strong { color: var(--text); display: block; margin-bottom: 3px; font-size: 14px; }
+
+/* ── BADGES PAGE ─────────────────────────────────── */
+.badges-inner {
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+
+.streak-card {
+  background: var(--ink-2);
+  border: 1px solid var(--amber-dim);
+  border-radius: var(--r);
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+.streak-flame { font-size: 36px; }
+.streak-num { font-family: var(--mono); font-size: 40px; font-weight: 500; color: var(--amber); line-height: 1; }
+.streak-label { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.streak-dots {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+.streak-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  border: 1px solid var(--rule);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  color: var(--text-3);
+  font-family: var(--mono);
+}
+.streak-dot.done { background: var(--amber-dim); border-color: var(--amber-glow); color: var(--amber); }
+.streak-dot.today { background: var(--amber); border-color: var(--amber); color: var(--ink); font-weight: 600; }
+
+.badge-section-title {
+  font-size: 15px; font-weight: 600; margin-bottom: 4px;
+}
+.badge-section-sub { font-size: 12px; color: var(--text-2); margin-bottom: 20px; }
+
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 36px;
+}
+.badge-card {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  padding: 20px 14px;
+  text-align: center;
+  transition: border-color 0.15s;
+}
+.badge-card.earned { border-color: var(--amber-dim); }
+.badge-card.locked { opacity: 0.4; }
+.badge-icon {
+  width: 52px; height: 52px;
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin: 0 auto 12px;
+}
+.badge-card.earned .badge-icon { background: var(--amber-dim); }
+.badge-card.locked .badge-icon { background: var(--ink-4); }
+.badge-name { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
+.badge-desc { font-size: 10px; color: var(--text-3); line-height: 1.4; }
+
+/* ── MAPS PLACEHOLDER ────────────────────────────── */
+.maps-inner {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  color: var(--text-3);
+  padding: 48px;
+}
+.maps-icon { font-size: 48px; opacity: 0.4; }
+.maps-title { font-size: 18px; font-weight: 500; color: var(--text-2); }
+.maps-sub { font-size: 13px; text-align: center; max-width: 360px; line-height: 1.6; }
+
+/* ── SETTINGS ────────────────────────────────────── */
+.settings-inner {
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+.setting-row {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  padding: 20px 24px;
+  margin-bottom: 10px;
+}
+.setting-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+.setting-input {
+  width: 100%;
+  background: var(--ink-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.setting-input:focus { border-color: var(--amber); }
+.setting-hint { font-size: 11px; color: var(--text-3); margin-top: 6px; }
+
+.danger-row {
+  background: transparent;
+  border: 1px solid rgba(232,96,122,0.2);
+  border-radius: var(--r);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.danger-text { font-size: 13px; color: var(--text-2); }
+.btn-danger {
+  background: transparent;
+  border: 1px solid var(--rose);
+  color: var(--rose);
+  border-radius: var(--r-sm);
+  padding: 7px 16px;
+  font-family: var(--sans);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-danger:hover { background: var(--rose-dim); }
+
+/* ── UTILS ───────────────────────────────────────── */
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- NAME PROMPT -->
+<div id="name-prompt">
+  <div class="name-card">
+    <div class="name-wordmark"><em>Lecture</em></div>
+    <p class="name-sub">Learn anything. Teach what you know.<br>Share how you got there.</p>
+    <input class="name-input" id="name-input" type="text" placeholder="What's your name?" maxlength="32" />
+    <button class="btn-primary" onclick="saveName()">Get started</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <a class="wordmark" onclick="nav('home')"><em>Lecture</em></a>
+  <button class="nav-link active" id="nav-home"    onclick="nav('home')">Home</button>
+  <button class="nav-link"        id="nav-maps"    onclick="nav('maps')">Maps</button>
+  <button class="nav-link"        id="nav-badges"  onclick="nav('badges')">Badges</button>
+  <button class="nav-link"        id="nav-settings"onclick="nav('settings')">Settings</button>
+  <div class="header-right">
+    <div class="avatar" id="header-avatar">?</div>
+  </div>
+</header>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="home-inner">
+    <div class="home-date">
+      <div class="date-box">
+        <div class="mo" id="home-month">JUN</div>
+        <div class="dy" id="home-day">11</div>
+      </div>
+    </div>
+    <div class="home-title" id="home-title">Welcome back!</div>
+    <div class="home-sub">Pick up where you left off, or start something new.</div>
+
+    <div class="eyebrow">What would you like to do?</div>
+
+    <div class="home-cards">
+      <div class="home-card featured" onclick="nav('track')">
+        <span class="card-icon">📖</span>
+        <div class="card-label">Learn</div>
+        <div class="card-title">Continue your journey</div>
+        <div class="card-desc">Pick up where you left off in 7×7 Code — Week 1, Day 1.</div>
+      </div>
+      <div class="home-card" onclick="nav('creator')">
+        <span class="card-icon">✏️</span>
+        <div class="card-label">Create</div>
+        <div class="card-title">Share what you know</div>
+        <div class="card-desc">Build a track from a framework, a playlist, or an idea.</div>
+      </div>
+      <div class="home-card" onclick="nav('explore')">
+        <span class="card-icon">🔭</span>
+        <div class="card-label">Explore</div>
+        <div class="card-title">Find something new</div>
+        <div class="card-desc">Browse tracks built by the community.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLORE PAGE -->
+<div class="page" id="page-explore">
+  <div class="explore-inner">
+    <div class="page-title">Explore tracks</div>
+    <div class="page-sub">Community-built learning paths on any subject.</div>
+
+    <div class="track-list">
+      <div class="track-row lang-multi" onclick="nav('track')">
+        <span class="track-emoji">⚡</span>
+        <div class="track-info">
+          <div class="track-name">7×7 Code — Week 1: Foundations</div>
+          <div class="track-meta">7 languages · 7 lessons · Variables, conditionals, loops</div>
+        </div>
+        <span class="track-tag">Framework</span>
+        <span class="track-arrow">→</span>
+      </div>
+      <div class="track-row lang-python" onclick="nav('track')">
+        <span class="track-emoji">🐍</span>
+        <div class="track-info">
+          <div class="track-name">Python for Data Analysis</div>
+          <div class="track-meta">12 lessons · pandas, NumPy, visualisation</div>
+        </div>
+        <span class="track-tag">Playlist</span>
+        <span class="track-arrow">→</span>
+      </div>
+      <div class="track-row lang-rust" onclick="nav('track')">
+        <span class="track-emoji">🦀</span>
+        <div class="track-info">
+          <div class="track-name">Rust from Scratch</div>
+          <div class="track-meta">10 lessons · ownership, borrowing, lifetimes</div>
+        </div>
+        <span class="track-tag">Framework</span>
+        <span class="track-arrow">→</span>
+      </div>
+      <div class="track-row" style="border-left-color:var(--text-3);opacity:0.5;">
+        <span class="track-emoji">➕</span>
+        <div class="track-info">
+          <div class="track-name">More tracks coming soon</div>
+          <div class="track-meta">Create one and be the first</div>
+        </div>
+        <span class="track-arrow">→</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRACK PAGE -->
+<div class="page" id="page-track">
+  <div class="track-page-inner">
+    <div class="breadcrumb">
+      <a onclick="nav('explore')">Explore</a>
+      <span>›</span>
+      <span>7×7 Code</span>
+    </div>
+
+    <div class="track-header">
+      <div class="track-header-tag">Week 1 · Framework track</div>
+      <div class="track-header-title">7×7 Code — Foundations</div>
+      <div class="track-header-desc">Learn variables, conditionals, and loops across seven languages in seven days. By the end, you'll have a working mental model for how different languages approach the same problems — and a much faster path to learning any new language.</div>
+      <div class="track-stats">
+        <div class="track-stat">Lessons <span>7</span></div>
+        <div class="track-stat">Languages <span>Python · TypeScript · SQL · Rust · Go · R · Zig</span></div>
+      </div>
+    </div>
+
+    <div class="lesson-list" id="lesson-list"></div>
+  </div>
+</div>
+
+<!-- CREATOR PAGE -->
+<div class="page" id="page-creator">
+  <div class="creator-inner">
+    <div class="page-title">Build a track</div>
+    <div class="page-sub">Describe your framework and we'll generate the structure. Edit anything.</div>
+
+    <div class="creator-input-wrap">
+      <div class="creator-label">Your teaching framework</div>
+      <textarea class="creator-textarea" id="creator-desc" rows="4">I want to teach the same core programming concepts across seven languages in parallel — Python, TypeScript, SQL, Rust, Go, R, and Zig — so learners build adaptability rather than fluency in one language. Each week covers one concept area. Each day covers one language. By the end of seven weeks, learners can compare how seven languages approach the same problems.</textarea>
+      <div class="creator-input-footer">
+        <span class="creator-hint">AI will generate a track structure, lesson order, and exercises from this description.</span>
+        <button class="btn-amber" onclick="alert('In the full version, this would regenerate the structure below.')">Regenerate ↻</button>
+      </div>
+    </div>
+
+    <div class="structure-section">
+      <div class="structure-header">
+        <div>
+          <div class="structure-title">Generated structure</div>
+          <div class="structure-sub">Click any week to see its lessons. Edit titles, reorder, or delete anything.</div>
+        </div>
+      </div>
+
+      <div id="creator-weeks"></div>
+    </div>
+
+    <div class="publish-bar">
+      <div class="publish-bar-text">
+        <strong>Ready to publish?</strong>
+        AI will generate badges for this track automatically when you publish.
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-ghost">Preview as learner</button>
+        <button class="btn-amber" onclick="alert('Published! In the full version this would appear in Explore.')">Publish track →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BADGES PAGE -->
+<div class="page" id="page-badges">
+  <div class="badges-inner">
+    <div class="page-title">Badges & streaks</div>
+    <div class="page-sub">Earned by completing lessons, tracks, and showing up consistently.</div>
+
+    <div class="streak-card">
+      <div class="streak-flame">🔥</div>
+      <div>
+        <div class="streak-num" id="streak-num">0</div>
+        <div class="streak-label">day streak</div>
+      </div>
+      <div class="streak-dots" id="streak-dots"></div>
+    </div>
+
+    <div class="badge-section-title">Your badges</div>
+    <div class="badge-section-sub">Complete lessons and tracks to earn these.</div>
+    <div class="badge-grid" id="badge-grid"></div>
+  </div>
+</div>
+
+<!-- MAPS PAGE -->
+<div class="page" id="page-maps">
+  <div class="maps-inner">
+    <div class="maps-icon">🗺️</div>
+    <div class="maps-title">The map is coming</div>
+    <div class="maps-sub">As tracks are published, an emergent graph of how they connect will appear here. Complete tracks to light up your path.</div>
+  </div>
+</div>
+
+<!-- SETTINGS PAGE -->
+<div class="page" id="page-settings">
+  <div class="settings-inner">
+    <div class="page-title">Settings</div>
+    <div class="page-sub" style="margin-bottom:28px;">Your preferences and account.</div>
+
+    <div class="setting-row">
+      <div class="setting-label">Your name</div>
+      <input class="setting-input" id="settings-name" type="text" />
+      <div class="setting-hint">Shown on your profile and in greetings.</div>
+    </div>
+
+    <div class="setting-row">
+      <div class="setting-label">Anthropic API key</div>
+      <input class="setting-input" id="settings-apikey" type="password" placeholder="sk-ant-..." />
+      <div class="setting-hint">Used for exercise grading and AI generation. Stored in your browser only. <a href="https://console.anthropic.com/keys" target="_blank" style="color:var(--amber);">Get one here →</a></div>
+    </div>
+
+    <button class="btn-amber" style="width:100%;margin-top:4px;" onclick="saveSettings()">Save changes</button>
+
+    <div class="danger-row">
+      <div class="danger-text">Wipe all data and start over</div>
+      <button class="btn-danger" onclick="wipeData()">Reset →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+
+const week1 = [
+  { day:1, lang:'Python',     emoji:'🐍', concept:'if/elif/else · for · while · list comprehensions',
+    color:'var(--blue)' },
+  { day:2, lang:'TypeScript', emoji:'🟦', concept:'if/else · switch · .map() · .filter()',
+    color:'#3178c6' },
+  { day:3, lang:'SQL',        emoji:'🗄️', concept:'CASE WHEN · WHERE · AND/OR · filtering',
+    color:'#a78bfa' },
+  { day:4, lang:'Rust',       emoji:'🦀', concept:'match expressions · loop · for · ranges',
+    color:'var(--rose)' },
+  { day:5, lang:'Go',         emoji:'🐹', concept:'if · switch (no fallthrough) · for range',
+    color:'var(--teal)' },
+  { day:6, lang:'R',          emoji:'📊', concept:'ifelse() · sapply() · apply family',
+    color:'var(--amber)' },
+  { day:7, lang:'Zig',        emoji:'⚡', concept:'if expression · switch · while · comptime',
+    color:'#f59e0b' },
+];
+
+const creatorWeeks = [
+  { week:1, title:'Foundations', concept:'Variables, Conditionals & Loops', days: week1 },
+  { week:2, title:'Data Structures', concept:'Lists, Maps, Sets, Tuples', days: week1.map(l=>({...l,concept:'Data structures in '+l.lang})) },
+  { week:3, title:'I/O & The Web', concept:'File handling, Web servers, Scraping, JSON', days: week1.map(l=>({...l,concept:'I/O & web in '+l.lang})) },
+  { week:4, title:'Reliability', concept:'Error handling, Debugging, Logging, Tests', days: week1.map(l=>({...l,concept:'Error handling in '+l.lang})) },
+  { week:5, title:'Paradigms', concept:'Object-oriented & Functional programming', days: week1.map(l=>({...l,concept:'OOP & FP in '+l.lang})) },
+  { week:6, title:'Performance', concept:'Concurrency & Optimization', days: week1.map(l=>({...l,concept:'Concurrency in '+l.lang})) },
+  { week:7, title:'Industry Standard', concept:'Production web servers, testing frameworks, real concurrency', days: week1.map(l=>({...l,concept:'Industry patterns in '+l.lang})) },
+];
+
+const allBadges = [
+  // generic
+  { id:'first_lesson',  icon:'⭐', name:'First step',      desc:'Complete your first lesson',       type:'generic' },
+  { id:'streak_3',      icon:'🔥', name:'3-day streak',    desc:'Study 3 days in a row',             type:'generic' },
+  { id:'streak_7',      icon:'💥', name:'Week streak',     desc:'Study 7 days in a row',             type:'generic' },
+  { id:'first_track',   icon:'🏁', name:'Finisher',        desc:'Complete a full track',             type:'generic' },
+  { id:'explorer',      icon:'🔭', name:'Explorer',        desc:'Open 3 different tracks',           type:'generic' },
+  // 7x7 specific
+  { id:'python',        icon:'🐍', name:'Python',          desc:'Complete Day 1 of 7×7',             type:'7x7' },
+  { id:'typescript',    icon:'🟦', name:'TypeScript',      desc:'Complete Day 2 of 7×7',             type:'7x7' },
+  { id:'sql',           icon:'🗄️', name:'SQL',             desc:'Complete Day 3 of 7×7',             type:'7x7' },
+  { id:'rust',          icon:'🦀', name:'Rust',            desc:'Complete Day 4 of 7×7',             type:'7x7' },
+  { id:'go',            icon:'🐹', name:'Go',              desc:'Complete Day 5 of 7×7',             type:'7x7' },
+  { id:'r',             icon:'📊', name:'R',               desc:'Complete Day 6 of 7×7',             type:'7x7' },
+  { id:'zig',           icon:'⚡', name:'Zig',             desc:'Complete Day 7 of 7×7',             type:'7x7' },
+  { id:'week1',         icon:'🗝️', name:'Week 1',          desc:'Complete all 7 days of Week 1',     type:'7x7' },
+];
+
+// Exercises for Day 1 Python (sample — others would be generated)
+const day1Exercises = [
+  {
+    label:'Hot or cold?', diff:1, diffLabel:'Beginner',
+    text:`<p>Here's how an if/elif/else works in Python:</p>
+<pre>score = 85
+if score >= 90:
+    print("A")
+elif score >= 80:
+    print("B")
+else:
+    print("C")</pre>
+<p>Write a function <code>describe_temp(degrees)</code> that returns <code>"hot"</code> above 30, <code>"warm"</code> above 20, <code>"cool"</code> above 10, and <code>"cold"</code> otherwise. Call it with four different numbers.</p>`,
+    starter:`def describe_temp(degrees):
+    if degrees > 30:
+        return "hot"
+    elif ___:
+        return "warm"
+    # add the remaining conditions
+
+print(describe_temp(35))
+print(describe_temp(22))`
+  },
+  {
+    label:'Print a list with for', diff:1, diffLabel:'Beginner',
+    text:`<p>A <code>for</code> loop goes through a list one item at a time:</p>
+<pre>colors = ["red", "green", "blue"]
+for color in colors:
+    print(color)</pre>
+<p>Create a list called <code>cities</code> with at least four city names. Use a <code>for</code> loop to print each one, numbered: "1. Bellinzona", "2. Lugano", etc.</p>`,
+    starter:`cities = ["Bellinzona", "Lugano", "Locarno", "Zurich"]
+number = 1
+for city in cities:
+    print(str(number) + ". " + ___)
+    number = ___`
+  },
+  {
+    label:'Find the first match', diff:2, diffLabel:'Beginner+',
+    text:`<p>A <code>while</code> loop keeps running until its condition becomes false:</p>
+<pre>count = 0
+while count < 5:
+    print(count)
+    count = count + 1</pre>
+<p>Given a list of prices, use a <code>while</code> loop to find and print the first price below 10. Print its value and position (starting from 1).</p>`,
+    starter:`prices = [45, 23, 38, 8, 15, 3, 27]
+position = 0
+while position < len(prices):
+    if prices[position] ___:
+        print("Found", prices[position], "at position", position + 1)
+        break
+    position = position + 1`
+  },
+  {
+    label:'Filter a list', diff:3, diffLabel:'Intermediate',
+    text:`<p>A list comprehension builds a new list in one line:</p>
+<pre>numbers = [1, 2, 3, 4, 5, 6]
+evens = [n for n in numbers if n % 2 == 0]
+# evens is [2, 4, 6]</pre>
+<p>Given a list of scores, use a list comprehension to make two lists: passing (60+) and failing. Print both and the count of each.</p>`,
+    starter:`scores = [88, 42, 95, 61, 37, 74, 55, 83, 29, 91]
+
+passing = [s for s in scores if ___]
+failing = ___
+
+print("Passing:", passing)
+print("Failing:", failing)`
+  },
+  {
+    label:'Grade report', diff:4, diffLabel:'Advanced',
+    text:`<p>Combine loops and conditionals. Loop through a dictionary of students and scores, classify each with if/elif, and count how many passed (60+). A dictionary loops like: <code>for name, score in students.items()</code>.</p>`,
+    starter:`students = {
+    "Alice": 92, "Bob": 74, "Carlos": 58,
+    "Diana": 85, "Eve": 61, "Frank": 43
+}
+
+passed = 0
+for name, score in students.items():
+    if score >= 90:
+        grade = "A"
+    elif ___:
+        grade = ___
+    # complete the grades
+    print(name + ": " + str(score) + " (" + grade + ")")`
+  },
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+function getProfile() {
+  try { return JSON.parse(localStorage.getItem('lecture_profile') || 'null'); } catch { return null; }
+}
+function saveProfile(p) { localStorage.setItem('lecture_profile', JSON.stringify(p)); }
+function getApiKey() { return localStorage.getItem('lecture_apikey') || ''; }
+function saveApiKey(k) { localStorage.setItem('lecture_apikey', k); }
+
+function getCompletedDays() {
+  const p = getProfile();
+  return p?.completedDays || [];
+}
+function markDayComplete(day) {
+  const p = getProfile();
+  if (!p) return;
+  if (!p.completedDays.includes(day)) {
+    p.completedDays.push(day);
+    p.streak = (p.streak || 0) + 1;
+  }
+  saveProfile(p);
+  renderLessons();
+  renderBadges();
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+const pages = ['home','explore','track','creator','badges','maps','settings'];
+function nav(name) {
+  pages.forEach(p => {
+    document.getElementById('page-'+p).classList.remove('active');
+    const btn = document.getElementById('nav-'+p);
+    if (btn) btn.classList.remove('active');
+  });
+  document.getElementById('page-'+name).classList.add('active');
+  const btn = document.getElementById('nav-'+name);
+  if (btn) btn.classList.add('active');
+  // special nav items that don't have pages
+  if (name === 'home') document.getElementById('nav-home').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── NAME PROMPT ───────────────────────────────────────────────────────────────
+function saveName() {
+  const name = document.getElementById('name-input').value.trim();
+  if (!name) {
+    document.getElementById('name-input').style.borderColor = 'var(--rose)';
+    return;
+  }
+  const profile = {
+    name,
+    completedDays: [],
+    streak: 0,
+    createdAt: Date.now()
+  };
+  saveProfile(profile);
+  document.getElementById('name-prompt').style.display = 'none';
+  bootApp(profile);
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+function bootApp(profile) {
+  const name = profile.name || '';
+  const initial = name[0]?.toUpperCase() || '?';
+
+  // header
+  document.getElementById('header-avatar').textContent = initial;
+
+  // home
+  const now = new Date();
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.getElementById('home-month').textContent = months[now.getMonth()];
+  document.getElementById('home-day').textContent = now.getDate();
+  document.getElementById('home-title').textContent = `Welcome back, ${name}!`;
+
+  // settings pre-fill
+  document.getElementById('settings-name').value = name;
+  document.getElementById('settings-apikey').value = getApiKey();
+
+  renderLessons();
+  renderCreatorWeeks();
+  renderBadges();
+}
+
+// ── LESSONS ───────────────────────────────────────────────────────────────────
+function renderLessons() {
+  const completed = getCompletedDays();
+  const container = document.getElementById('lesson-list');
+
+  container.innerHTML = week1.map((l, i) => {
+    const isDone    = completed.includes(l.day);
+    const isCurrent = !isDone && (i === 0 || completed.includes(l.day - 1));
+    const isLocked  = !isDone && !isCurrent;
+
+    const statusHtml = isDone
+      ? '<span class="lesson-status status-done">✓ Complete</span>'
+      : isCurrent
+        ? '<span class="lesson-status status-current">▸ In progress</span>'
+        : '<span class="lesson-status status-locked">Locked</span>';
+
+    const exercisesHtml = i === 0
+      ? day1Exercises.map((ex, ei) => `
+        <div class="exercise" id="ex-${l.day}-${ei}">
+          <div class="exercise-top" onclick="toggleEx('ex-${l.day}-${ei}')">
+            <span class="ex-num">${ei+1}</span>
+            <span class="ex-label">${ex.label}</span>
+            <span class="ex-diff diff-${ex.diff}">${ex.diffLabel}</span>
+            <span class="ex-chev">▾</span>
+          </div>
+          <div class="exercise-body">
+            <div class="ex-text">${ex.text}</div>
+            <div class="code-starter">${escHtml(ex.starter)}</div>
+            <textarea class="answer" rows="6" placeholder="Write your solution here…"></textarea>
+          </div>
+        </div>`).join('')
+      : `<div style="padding:8px 0;font-size:12px;color:var(--text-3);font-family:var(--mono);">Exercises load when this lesson is active.</div>`;
+
+    return `
+      <div class="lesson-row ${isDone?'done':''} ${isCurrent?'current':''} ${isLocked?'locked':''}" id="lesson-${l.day}">
+        <div class="lesson-header-row" onclick="${isLocked?'showLocked()':'toggleLesson('+l.day+')'}" >
+          <span class="lesson-num">${String(l.day).padStart(2,'0')}</span>
+          <span class="lesson-title-text">${l.emoji} ${l.lang} — ${l.concept}</span>
+          ${statusHtml}
+          ${!isLocked ? '<span class="lesson-chevron">▾</span>' : ''}
+        </div>
+        <div class="lesson-body">
+          <div class="concept-section" id="concept-${l.day}">
+            <strong>${l.lang} — ${l.concept}</strong><br><br>
+            ${getConceptText(l.day)}
+          </div>
+          <div class="exercises-section">
+            <div class="ex-heading">Exercises</div>
+            ${exercisesHtml}
+          </div>
+          <div class="lesson-footer">
+            <p>Submit for AI grading, or mark complete manually.</p>
+            <div class="footer-btns">
+              <button class="btn-ghost" onclick="markDayComplete(${l.day})">Mark complete ✓</button>
+              <button class="btn-amber" onclick="submitLesson(${l.day})">Submit for grading →</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // auto-open current lesson
+  const first = week1.find(l => !completed.includes(l.day));
+  if (first) toggleLesson(first.day, true);
+}
+
+function getConceptText(day) {
+  const texts = {
+    1: `<strong>Conditionals</strong> use <code>if / elif / else</code> — no brackets, no semicolons, just indentation.<br><br>
+<strong>Loops</strong> come in two forms. A <code>for</code> loop goes through items in a list one by one. A <code>while</code> loop keeps going as long as a condition is true.<br><br>
+<strong>List comprehensions</strong> are a shorthand for building a new list in one line: <code>[x * 2 for x in numbers]</code>.`,
+    2: `TypeScript uses curly braces: <code>if (condition) { } else if { } else { }</code>. The ternary operator <code>condition ? a : b</code> is a one-line if/else.<br><br>
+<code>switch/case</code> requires <code>break</code> at the end of each case or execution falls through.<br><br>
+Array methods: <code>.map()</code> transforms, <code>.filter()</code> keeps matching items, <code>.reduce()</code> computes a single value.`,
+    3: `SQL thinks in sets. <strong>WHERE</strong> filters rows — equivalent to <code>.filter()</code>. <strong>CASE WHEN</strong> computes a new value per row — equivalent to <code>if/elif</code>.<br><br>
+Chain conditions with <code>AND</code>, <code>OR</code>, <code>NOT</code>. Use <code>IN</code>, <code>BETWEEN</code>, <code>LIKE</code> for richer matching.`,
+    4: `Rust's <code>match</code> is exhaustive — the compiler errors if you miss a case. It also returns a value, unlike switch/case.<br><br>
+Ranges: <code>1..5</code> (exclusive), <code>1..=5</code> (inclusive). Three loop types: <code>loop</code> (infinite until break), <code>while</code>, <code>for x in iter</code>.`,
+    5: `Go has one loop keyword: <code>for</code> — used as a while loop, a range loop, or a traditional counted loop.<br><br>
+<code>switch</code> does not fall through by default. No <code>break</code> needed. An expressionless switch acts as a cleaner if/else if chain.`,
+    6: `R thinks in vectors. <code>ifelse(condition, yes, no)</code> applies element-by-element across a whole vector — equivalent to <code>.map()</code> with a condition.<br><br>
+<code>sapply(vec, fn)</code> applies a function to each element. Explicit <code>for</code> loops exist but are non-idiomatic for data work.`,
+    7: `Zig's <code>if</code> is an expression — it returns a value. <code>switch</code> is exhaustive like Rust's match.<br><br>
+The unique concept: <code>comptime</code> — code that runs at compile time. This is how Zig does generics. No equivalent exists in the other six languages.`,
+  };
+  return texts[day] || 'Concept explanation coming soon.';
+}
+
+function toggleLesson(day, forceOpen) {
+  const el = document.getElementById('lesson-'+day);
+  if (!el || el.classList.contains('locked')) return;
+  if (forceOpen) { el.classList.add('open'); return; }
+  el.classList.toggle('open');
+}
+
+function toggleEx(id) {
+  document.getElementById(id)?.classList.toggle('open');
+}
+
+function showLocked() {
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--ink-3);border:1px solid var(--rule-2);border-radius:8px;padding:11px 20px;font-size:13px;color:var(--text-2);z-index:500;white-space:nowrap;';
+  toast.textContent = '🔒 Complete the previous lesson to unlock this one.';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2800);
+}
+
+// ── GRADING ───────────────────────────────────────────────────────────────────
+async function submitLesson(day) {
+  const key = getApiKey();
+  if (!key) {
+    nav('settings');
+    return;
+  }
+
+  const lesson = week1.find(l => l.day === day);
+  const answers = [...document.querySelectorAll(`#lesson-${day} textarea.answer`)]
+    .map((ta, i) => `Exercise ${i+1}:\n${ta.value || '(empty)'}`).join('\n\n');
+
+  // show result area
+  let resultEl = document.getElementById(`grade-result-${day}`);
+  if (!resultEl) {
+    resultEl = document.createElement('div');
+    resultEl.id = `grade-result-${day}`;
+    document.querySelector(`#lesson-${day} .lesson-footer`).before(resultEl);
+  }
+  resultEl.className = 'grading-result loading';
+  resultEl.innerHTML = '<span class="spin"></span> Grading your solutions…';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content:
+          `You are a friendly programming tutor grading exercises for a beginner.\n\nLanguage: ${lesson.lang}\nConcept: ${lesson.concept}\n\nStudent's solutions:\n${answers}\n\nFor each exercise that has a solution: give ✅ or ❌, one observation, and one specific suggestion. Keep each to 2-3 sentences. End with one encouraging overall sentence. Use plain markdown.`
+        }]
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `Status ${res.status}`);
+    const text = data.content?.find(b => b.type === 'text')?.text || '';
+    resultEl.className = 'grading-result success';
+    resultEl.innerHTML = text.replace(/\n/g,'<br>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+    markDayComplete(day);
+  } catch(e) {
+    resultEl.className = 'grading-result error';
+    resultEl.innerHTML = `Grading failed: ${e.message}. <a href="#" onclick="nav('settings')" style="color:var(--amber);">Check your API key →</a>`;
+  }
+}
+
+// ── CREATOR ───────────────────────────────────────────────────────────────────
+function renderCreatorWeeks() {
+  const container = document.getElementById('creator-weeks');
+  container.innerHTML = creatorWeeks.map(w => `
+    <div class="week-block" id="cw-${w.week}">
+      <div class="week-header" onclick="toggleWeek(${w.week})">
+        <span class="week-num">Week ${w.week}</span>
+        <span class="week-title-text">${w.title}</span>
+        <span class="week-meta">${w.concept}</span>
+        <span class="week-chev">▾</span>
+      </div>
+      <div class="week-body">
+        ${w.days.map(d => `
+          <div class="day-row">
+            <span class="day-tag">Day ${d.day}</span>
+            <span class="day-lang">${d.emoji} ${d.lang}</span>
+            <span class="day-concept">${d.concept}</span>
+            <button class="day-edit">Edit</button>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function toggleWeek(n) {
+  document.getElementById('cw-'+n)?.classList.toggle('open');
+}
+
+// ── BADGES ────────────────────────────────────────────────────────────────────
+function renderBadges() {
+  const completed = getCompletedDays();
+  const p = getProfile();
+  const streak = p?.streak || 0;
+
+  // streak dots — last 7 days simplified
+  const dots = document.getElementById('streak-dots');
+  const days = ['M','T','W','T','F','S','S'];
+  const todayIdx = new Date().getDay();
+  dots.innerHTML = days.map((d,i) => {
+    const isToday = i === (todayIdx === 0 ? 6 : todayIdx-1);
+    const done = streak > (6-i);
+    return `<div class="streak-dot ${isToday?'today':done?'done':''}">${d}</div>`;
+  }).join('');
+  document.getElementById('streak-num').textContent = streak;
+
+  // badges
+  const earnedIds = new Set();
+  if (completed.length >= 1) earnedIds.add('first_lesson');
+  if (streak >= 3) earnedIds.add('streak_3');
+  if (streak >= 7) earnedIds.add('streak_7');
+  if (completed.length >= 7) { earnedIds.add('first_track'); earnedIds.add('week1'); }
+  week1.forEach(l => { if (completed.includes(l.day)) earnedIds.add(l.lang.toLowerCase().replace('typescript','typescript').replace(' ','_')); });
+
+  const generic = allBadges.filter(b => b.type === 'generic');
+  const specific = allBadges.filter(b => b.type === '7x7');
+
+  const grid = document.getElementById('badge-grid');
+  grid.innerHTML = `
+    <div style="grid-column:1/-1;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);margin-bottom:4px;">General</div>
+    ${generic.map(b => badgeCard(b, earnedIds.has(b.id))).join('')}
+    <div style="grid-column:1/-1;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);margin:12px 0 4px;">7×7 Code</div>
+    ${specific.map(b => badgeCard(b, earnedIds.has(b.id))).join('')}
+  `;
+}
+
+function badgeCard(b, earned) {
+  return `<div class="badge-card ${earned?'earned':'locked'}">
+    <div class="badge-icon">${b.icon}</div>
+    <div class="badge-name">${b.name}</div>
+    <div class="badge-desc">${b.desc}</div>
+  </div>`;
+}
+
+// ── SETTINGS ─────────────────────────────────────────────────────────────────
+function saveSettings() {
+  const name = document.getElementById('settings-name').value.trim();
+  const key  = document.getElementById('settings-apikey').value.trim();
+  if (name) {
+    const p = getProfile();
+    if (p) { p.name = name; saveProfile(p); }
+    document.getElementById('home-title').textContent = `Welcome back, ${name}!`;
+    document.getElementById('header-avatar').textContent = name[0].toUpperCase();
+  }
+  if (key) saveApiKey(key);
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--teal-dim);border:1px solid rgba(61,207,176,0.3);border-radius:8px;padding:10px 20px;font-size:13px;color:var(--teal);z-index:500;';
+  t.textContent = '✓ Settings saved';
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2000);
+}
+
+function wipeData() {
+  if (!confirm('Wipe all data and start over?')) return;
+  localStorage.removeItem('lecture_profile');
+  localStorage.removeItem('lecture_apikey');
+  location.reload();
+}
+
+// ── TAB IN TEXTAREAS ──────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Tab') return;
+  const el = document.activeElement;
+  if (!el || el.tagName !== 'TEXTAREA') return;
+  e.preventDefault();
+  const start = el.selectionStart;
+  const end   = el.selectionEnd;
+  const spaces = '    '; // 4 spaces
+  el.value = el.value.slice(0, start) + spaces + el.value.slice(end);
+  el.selectionStart = el.selectionEnd = start + spaces.length;
+});
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+const _profile = getProfile();
+if (_profile) {
+  document.getElementById('name-prompt').style.display = 'none';
+  bootApp(_profile);
+} else {
+  document.getElementById('name-input').focus();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture — Week 1 · Python Forum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:        #111318;
+  --surface:    #1A1D24;
+  --surface-2:  #22262F;
+  --surface-3:  #2A2D36;
+  --rule:       rgba(255,255,255,0.07);
+  --rule-2:     rgba(255,255,255,0.12);
+  --text:       #E9EBF0;
+  --text-2:     #8892A4;
+  --text-3:     #4A5166;
+  --amber:      #D4923A;
+  --amber-dim:  rgba(212,146,58,0.12);
+  --amber-rule: rgba(212,146,58,0.4);
+  --green:      #3DAF8A;
+  --green-dim:  rgba(61,175,138,0.1);
+  --rose:       #C85A72;
+  --rose-dim:   rgba(200,90,114,0.1);
+  --blue-dim:   rgba(100,140,220,0.1);
+  --blue:       #6490D8;
+  --serif:      'Newsreader', Georgia, serif;
+  --sans:       'DM Sans', system-ui, sans-serif;
+  --mono:       'DM Mono', monospace;
+}
+
+html { font-size: 14px; }
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: var(--sans); cursor: pointer; }
+
+/* ── HEADER ──────────────────────────────────────── */
+header {
+  height: 50px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 6px;
+  position: sticky;
+  top: 0;
+  background: rgba(17,19,24,0.94);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+}
+
+.wordmark {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--text);
+  margin-right: 16px;
+  letter-spacing: -0.2px;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  padding: 5px 11px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--text-2);
+  transition: all 0.15s;
+}
+.nav-btn:hover { background: var(--surface); color: var(--text); }
+.nav-btn.active { background: var(--amber-dim); color: var(--amber); }
+
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--amber-dim);
+  border: 1px solid var(--amber-rule);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 11px; color: var(--amber);
+}
+
+/* ── BREADCRUMB ──────────────────────────────────── */
+.breadcrumb {
+  padding: 14px 28px;
+  font-size: 12px;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.breadcrumb a { color: var(--text-2); }
+.breadcrumb a:hover { color: var(--text); }
+.breadcrumb span { opacity: 0.4; }
+
+/* ── GATE BANNER ─────────────────────────────────── */
+.gate-banner {
+  background: rgba(212,146,58,0.07);
+  border-bottom: 1px solid rgba(212,146,58,0.15);
+  padding: 9px 28px;
+  font-size: 12px;
+  color: var(--amber);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gate-banner svg { flex-shrink: 0; opacity: 0.7; }
+
+/* ── THREE-COLUMN LAYOUT ─────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0,1fr) 210px;
+  gap: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 28px 60px;
+  align-items: start;
+  gap: 32px;
+}
+
+/* ── LEFT: CITED ─────────────────────────────────── */
+.col-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+  margin-bottom: 16px;
+}
+
+.cited-item {
+  padding: 0 0 20px 16px;
+  border-left: 2px solid var(--amber-rule);
+  margin-bottom: 20px;
+  position: relative;
+}
+.cited-item::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 4px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--amber);
+  border: 2px solid var(--ink);
+}
+.cited-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--amber);
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.cited-title {
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.45;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+.cited-title:hover { color: var(--amber); }
+.cited-meta {
+  font-size: 11px;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.status-pip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-family: var(--mono);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.pip-fossil  { background: var(--surface-2); color: var(--text-3); }
+.pip-public  { background: var(--blue-dim);  color: var(--blue); }
+.pip-active  { background: var(--green-dim); color: var(--green); }
+
+.cited-divider {
+  height: 1px;
+  background: var(--rule);
+  margin: 4px 0 24px 16px;
+}
+
+/* ── CENTER: THREADS ─────────────────────────────── */
+.thread-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.compose-btn {
+  flex: 1;
+  min-width: 180px;
+  background: var(--surface);
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-size: 13px;
+  color: var(--text-3);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s;
+}
+.compose-btn:hover { background: var(--surface-2); color: var(--text-2); border-color: var(--rule-2); }
+.compose-btn svg { opacity: 0.5; }
+
+.sort-group { display: flex; gap: 4px; }
+.sort-btn {
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text-3);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.sort-btn:hover { border-color: var(--rule-2); color: var(--text-2); }
+.sort-btn.active { background: var(--surface-2); border-color: var(--rule-2); color: var(--text); }
+
+/* thread cards */
+.thread {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 10px;
+  transition: border-color 0.15s;
+  cursor: pointer;
+}
+.thread:hover { border-color: var(--rule-2); }
+.thread:last-child { margin-bottom: 0; }
+
+.thread-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.av {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  flex-shrink: 0;
+}
+.av-b { background: var(--blue-dim); color: var(--blue); }
+.av-g { background: var(--green-dim); color: var(--green); }
+.av-r { background: var(--rose-dim); color: var(--rose); }
+.av-a { background: var(--amber-dim); color: var(--amber); }
+
+.thread-byline {
+  font-size: 11px;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.live-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--green);
+  display: inline-block;
+}
+.fossil-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--text-3);
+  display: inline-block;
+}
+
+.thread-title {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text);
+  margin-bottom: 7px;
+}
+.thread-body {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.7;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* limit bar */
+.limit-wrap { margin-bottom: 6px; }
+.limit-bar {
+  height: 2px;
+  background: var(--surface-3);
+  border-radius: 1px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.limit-fill {
+  height: 100%;
+  border-radius: 1px;
+  transition: width 0.4s ease;
+}
+.fill-green  { background: var(--green); }
+.fill-amber  { background: var(--amber); }
+.fill-grey   { background: var(--text-3); }
+.limit-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-3);
+}
+.limit-label.warn { color: var(--amber); }
+.limit-label.fossil { color: var(--text-3); }
+
+.thread-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-family: var(--mono);
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  color: var(--text-3);
+}
+.chip svg { opacity: 0.6; }
+.chip-cite { background: var(--amber-dim); color: var(--amber); }
+.chip-active { background: var(--green-dim); color: var(--green); }
+.chip-pub { background: var(--blue-dim); color: var(--blue); }
+
+/* ── RIGHT: INFO ─────────────────────────────────── */
+.info-block {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+.info-block:last-child { margin-bottom: 0; }
+
+.info-title {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.info-body {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.7;
+}
+
+.rule-list { margin-top: 10px; }
+.rule-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px 0;
+  border-top: 1px solid var(--rule);
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.rule-n {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--amber);
+  flex-shrink: 0;
+  margin-top: 1px;
+  width: 14px;
+}
+
+.stat-table { width: 100%; margin-top: 6px; }
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-top: 1px solid var(--rule);
+  font-size: 12px;
+  color: var(--text-2);
+}
+.stat-row:first-child { border-top: none; }
+.stat-val {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text);
+}
+.stat-val.amber { color: var(--amber); }
+
+.progress-mini {
+  margin-top: 12px;
+}
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-3);
+  margin-bottom: 5px;
+  font-family: var(--mono);
+}
+.progress-track {
+  height: 3px;
+  background: var(--surface-3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--amber);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="wordmark" href="#">Lecture</a>
+  <button class="nav-btn" onclick="location.href='#'">Home</button>
+  <button class="nav-btn active">Forums</button>
+  <button class="nav-btn">Tracks</button>
+  <button class="nav-btn">Maps</button>
+  <button class="nav-btn">Badges</button>
+  <div class="header-right">
+    <button class="nav-btn">Settings</button>
+    <div class="avatar">M</div>
+  </div>
+</header>
+
+<div class="breadcrumb">
+  <a href="#">Home</a>
+  <span>/</span>
+  <a href="#">7×7 Code</a>
+  <span>/</span>
+  <a href="#">Week 1</a>
+  <span>/</span>
+  Week 1 · Day 1 · Python Forum
+</div>
+
+<div class="gate-banner">
+  <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 7V5a3 3 0 1 1 6 0v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+  Private to learners who have completed Day 1. Threads fossilize at 50 posts or 14 days — whichever comes first.
+</div>
+
+<div class="layout">
+
+  <!-- ── LEFT: CITED ─────────────────────────────── -->
+  <div>
+    <div class="col-label">Highly cited</div>
+
+    <div class="cited-item">
+      <div class="cited-count">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 6h4v8H2zM10 2h4v12h-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        24 citations
+      </div>
+      <div class="cited-title">Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod</div>
+      <div class="cited-meta">
+        42 posts
+        <span class="status-pip pip-fossil">
+          <svg width="8" height="8" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M4 6h4M6 4v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          fossilized
+        </span>
+        <span class="status-pip pip-public">public</span>
+      </div>
+    </div>
+
+    <div class="cited-item">
+      <div class="cited-count">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 6h4v8H2zM10 2h4v12h-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        17 citations
+      </div>
+      <div class="cited-title">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris</div>
+      <div class="cited-meta">
+        38 posts
+        <span class="status-pip pip-fossil">fossilized</span>
+      </div>
+    </div>
+
+    <div class="cited-item">
+      <div class="cited-count">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 6h4v8H2zM10 2h4v12h-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        9 citations
+      </div>
+      <div class="cited-title">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum</div>
+      <div class="cited-meta">
+        21 posts
+        <span class="status-pip pip-fossil">fossilized</span>
+        <span class="status-pip pip-public">public</span>
+      </div>
+    </div>
+
+    <div class="cited-divider"></div>
+
+    <div class="cited-item">
+      <div class="cited-count">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 6h4v8H2zM10 2h4v12h-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        6 citations
+      </div>
+      <div class="cited-title">Excepteur sint occaecat cupidatat non proident, sunt in culpa</div>
+      <div class="cited-meta">
+        18 posts
+        <span class="status-pip pip-active">active</span>
+      </div>
+    </div>
+
+    <div class="cited-item">
+      <div class="cited-count">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 6h4v8H2zM10 2h4v12h-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        4 citations
+      </div>
+      <div class="cited-title">Nemo enim ipsam voluptatem quia voluptas sit aspernatur</div>
+      <div class="cited-meta">
+        31 posts
+        <span class="status-pip pip-active">active</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CENTER: THREADS ────────────────────────── -->
+  <div>
+    <div class="thread-toolbar">
+      <button class="compose-btn">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V8M10 2l4 4-6 6H4v-4l6-6z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Start a new discussion…
+      </button>
+      <div class="sort-group">
+        <button class="sort-btn active" onclick="setSort(this)">Recent</button>
+        <button class="sort-btn" onclick="setSort(this)">Cited</button>
+        <button class="sort-btn" onclick="setSort(this)">Active</button>
+        <button class="sort-btn" onclick="setSort(this)">Fossilized</button>
+      </div>
+    </div>
+
+    <!-- thread 1 — active, early -->
+    <div class="thread">
+      <div class="thread-top">
+        <div class="av av-b">AL</div>
+        <div class="thread-byline">
+          <span class="live-dot"></span>
+          Active · 3h ago · AL
+        </div>
+      </div>
+      <div class="thread-title">Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt</div>
+      <div class="thread-body">Ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure.</div>
+      <div class="limit-wrap">
+        <div class="limit-bar"><div class="limit-fill fill-green" style="width:34%"></div></div>
+        <div class="limit-label">17 / 50 posts</div>
+      </div>
+      <div class="thread-footer">
+        <span class="chip chip-active">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M1 9V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6l-2-1.5H2a1 1 0 0 1-1-1z" stroke="currentColor" stroke-width="1.2"/></svg>
+          17 replies
+        </span>
+        <span class="chip chip-cite">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 2v4l2-1.5L7 6V2M2 9h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          2 citations
+        </span>
+        <span class="chip">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 2l1.2 3.6H11L8.1 7.4l1.2 3.6L6 9l-3.3 2 1.2-3.6L1 5.6h3.8z" stroke="currentColor" stroke-width="1.1"/></svg>
+          8 upvotes
+        </span>
+      </div>
+    </div>
+
+    <!-- thread 2 — active, nearing limit -->
+    <div class="thread">
+      <div class="thread-top">
+        <div class="av av-g">MR</div>
+        <div class="thread-byline">
+          <span class="live-dot"></span>
+          Active · 6h ago · MR
+        </div>
+      </div>
+      <div class="thread-title">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat</div>
+      <div class="thread-body">Sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</div>
+      <div class="limit-wrap">
+        <div class="limit-bar"><div class="limit-fill fill-amber" style="width:72%"></div></div>
+        <div class="limit-label warn">36 / 50 posts · nearing limit</div>
+      </div>
+      <div class="thread-footer">
+        <span class="chip chip-active">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M1 9V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6l-2-1.5H2a1 1 0 0 1-1-1z" stroke="currentColor" stroke-width="1.2"/></svg>
+          36 replies
+        </span>
+        <span class="chip chip-cite">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 2v4l2-1.5L7 6V2M2 9h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          5 citations
+        </span>
+        <span class="chip">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 2l1.2 3.6H11L8.1 7.4l1.2 3.6L6 9l-3.3 2 1.2-3.6L1 5.6h3.8z" stroke="currentColor" stroke-width="1.1"/></svg>
+          14 upvotes
+        </span>
+      </div>
+    </div>
+
+    <!-- thread 3 — fossilized, published -->
+    <div class="thread">
+      <div class="thread-top">
+        <div class="av av-r">JK</div>
+        <div class="thread-byline">
+          <span class="fossil-dot"></span>
+          Fossilized · 2d ago · JK
+        </div>
+      </div>
+      <div class="thread-title">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit</div>
+      <div class="thread-body">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet consectetur adipisci velit, sed quia non numquam eius modi tempora incidunt.</div>
+      <div class="limit-wrap">
+        <div class="limit-bar"><div class="limit-fill fill-grey" style="width:100%"></div></div>
+        <div class="limit-label fossil">50 / 50 posts · fossilized · read-only</div>
+      </div>
+      <div class="thread-footer">
+        <span class="chip">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M1 9V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6l-2-1.5H2a1 1 0 0 1-1-1z" stroke="currentColor" stroke-width="1.2"/></svg>
+          50 replies
+        </span>
+        <span class="chip chip-cite">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 2v4l2-1.5L7 6V2M2 9h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          9 citations
+        </span>
+        <span class="chip chip-pub">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 6h9M6 1.5C4.5 3 3.5 4.4 3.5 6s1 3 2.5 4.5M6 1.5C7.5 3 8.5 4.4 8.5 6s-1 3-2.5 4.5" stroke="currentColor" stroke-width="1.1"/></svg>
+          published publicly
+        </span>
+      </div>
+    </div>
+
+    <!-- thread 4 — fossilized, private -->
+    <div class="thread">
+      <div class="thread-top">
+        <div class="av av-a">SK</div>
+        <div class="thread-byline">
+          <span class="fossil-dot"></span>
+          Fossilized · 5d ago · SK
+        </div>
+      </div>
+      <div class="thread-title">Ut enim ad minima veniam quis nostrum exercitationem ullam corporis suscipit</div>
+      <div class="thread-body">Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla.</div>
+      <div class="limit-wrap">
+        <div class="limit-bar"><div class="limit-fill fill-grey" style="width:100%"></div></div>
+        <div class="limit-label fossil">50 / 50 posts · fossilized · read-only</div>
+      </div>
+      <div class="thread-footer">
+        <span class="chip">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M1 9V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6l-2-1.5H2a1 1 0 0 1-1-1z" stroke="currentColor" stroke-width="1.2"/></svg>
+          50 replies
+        </span>
+        <span class="chip chip-cite">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 2v4l2-1.5L7 6V2M2 9h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          6 citations
+        </span>
+        <span class="chip">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><rect x="1" y="4.5" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M4 4.5V3a2 2 0 0 1 4 0v1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          cohort only
+        </span>
+      </div>
+    </div>
+
+    <!-- thread 5 — active, early -->
+    <div class="thread">
+      <div class="thread-top">
+        <div class="av av-g">PR</div>
+        <div class="thread-byline">
+          <span class="live-dot"></span>
+          Active · 11h ago · PR
+        </div>
+      </div>
+      <div class="thread-title">Temporibus autem quibusdam et aut officiis debitis rerum necessitatibus</div>
+      <div class="thread-body">Nam libero tempore cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est.</div>
+      <div class="limit-wrap">
+        <div class="limit-bar"><div class="limit-fill fill-green" style="width:16%"></div></div>
+        <div class="limit-label">8 / 50 posts</div>
+      </div>
+      <div class="thread-footer">
+        <span class="chip chip-active">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M1 9V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6l-2-1.5H2a1 1 0 0 1-1-1z" stroke="currentColor" stroke-width="1.2"/></svg>
+          8 replies
+        </span>
+        <span class="chip chip-cite">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 2v4l2-1.5L7 6V2M2 9h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          1 citation
+        </span>
+        <span class="chip">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 2l1.2 3.6H11L8.1 7.4l1.2 3.6L6 9l-3.3 2 1.2-3.6L1 5.6h3.8z" stroke="currentColor" stroke-width="1.1"/></svg>
+          3 upvotes
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT: INFO ─────────────────────────────── -->
+  <div>
+    <div class="info-block">
+      <div class="info-title">Week 1 · Day 1 · Python</div>
+      <div class="info-body">Private to learners who have reached this point in the track. Discussions fossilize at 50 posts or 14 days.</div>
+      <div class="progress-mini">
+        <div class="progress-label">
+          <span>your progress</span>
+          <span>Day 1 / 7</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:14%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-title">How this forum works</div>
+      <div class="rule-list">
+        <div class="rule-item">
+          <span class="rule-n">1</span>
+          Discussions are private to this cohort by default
+        </div>
+        <div class="rule-item">
+          <span class="rule-n">2</span>
+          Threads fossilize at 50 posts — they become read-only and permanently citable
+        </div>
+        <div class="rule-item">
+          <span class="rule-n">3</span>
+          Cite a fossilized thread in a new discussion to reference it
+        </div>
+        <div class="rule-item">
+          <span class="rule-n">4</span>
+          12+ upvotes from cohort members can publish a thread publicly
+        </div>
+        <div class="rule-item">
+          <span class="rule-n">5</span>
+          Citations from 3 or more independent threads also surface a discussion publicly
+        </div>
+      </div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-title">Forum stats</div>
+      <div class="stat-table">
+        <div class="stat-row">Members <span class="stat-val">143</span></div>
+        <div class="stat-row">Active threads <span class="stat-val">12</span></div>
+        <div class="stat-row">Fossilized <span class="stat-val">38</span></div>
+        <div class="stat-row">Published publicly <span class="stat-val">7</span></div>
+        <div class="stat-row">Total citations <span class="stat-val amber">94</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function setSort(btn) {
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

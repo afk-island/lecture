@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept Widgets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:       #0c0f18;
+  --ink-2:     #141820;
+  --ink-3:     #1c2230;
+  --ink-4:     #242b3a;
+  --rule:      rgba(255,255,255,0.07);
+  --rule-2:    rgba(255,255,255,0.13);
+  --text:      #e8ecf4;
+  --text-2:    #8b96b0;
+  --text-3:    #4a5470;
+  --amber:     #e8a245;
+  --amber-dim: rgba(232,162,69,0.13);
+  --teal:      #3dcfb0;
+  --teal-dim:  rgba(61,207,176,0.12);
+  --rose:      #e8607a;
+  --rose-dim:  rgba(232,96,122,0.12);
+  --mono:      'DM Mono', monospace;
+  --sans:      'DM Sans', sans-serif;
+  --r:         10px;
+  --r-sm:      6px;
+}
+
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 48px 24px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 48px;
+}
+h1 em { color: var(--amber); font-style: normal; }
+
+/* ── WIDGET SHELL ──────────────────────────────────── */
+.widget {
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 64px;
+}
+.widget-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+  padding: 14px 20px 0;
+}
+.widget-title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  padding: 6px 20px 16px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.stage {
+  padding: 32px 24px;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+}
+
+.controls {
+  padding: 16px 20px;
+  border-top: 1px solid var(--rule);
+  background: var(--ink-3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.caption {
+  padding: 18px 20px;
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.75;
+}
+.caption strong { color: var(--text); }
+.caption code {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: rgba(255,255,255,0.07);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--amber);
+}
+
+/* ── CONTROLS ──────────────────────────────────────── */
+.btn {
+  background: var(--ink-4);
+  border: 1px solid var(--rule-2);
+  color: var(--text-2);
+  border-radius: var(--r-sm);
+  padding: 7px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--ink-2); color: var(--text); }
+.btn.primary { background: var(--amber); border-color: var(--amber); color: var(--ink); font-weight: 500; }
+.btn.primary:hover { opacity: 0.88; }
+.btn:disabled { opacity: 0.35; cursor: default; }
+
+.ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+.ctrl-group input[type=range] {
+  -webkit-appearance: none;
+  width: 100px;
+  height: 4px;
+  background: var(--ink-4);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.ctrl-group input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  background: var(--amber);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.ctrl-val { color: var(--amber); min-width: 20px; }
+.ctrl-spacer { flex: 1; }
+
+/* ── WHILE LOOP WIDGET ─────────────────────────────── */
+.wl-condition {
+  font-family: var(--mono);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s;
+}
+.wl-keyword { color: var(--text-3); font-size: 16px; }
+.wl-var     { color: var(--amber); }
+.wl-op      { color: var(--text-2); }
+.wl-thresh  { color: var(--teal); }
+.wl-result  {
+  font-size: 11px;
+  font-family: var(--mono);
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-left: 4px;
+  transition: all 0.3s;
+}
+.wl-result.true  { background: var(--teal-dim); color: var(--teal); }
+.wl-result.false { background: var(--rose-dim); color: var(--rose); }
+
+.wl-track-wrap {
+  width: 100%;
+  max-width: 420px;
+}
+.wl-track-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+.wl-track {
+  width: 100%;
+  height: 8px;
+  background: var(--ink-4);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.wl-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--teal);
+  transition: width 0.35s cubic-bezier(0.4,0,0.2,1), background 0.3s;
+  position: relative;
+}
+.wl-fill.danger { background: var(--rose); }
+
+/* step log */
+.wl-log {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+.wl-log-row {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  padding: 4px 10px;
+  background: var(--ink-3);
+  border-radius: var(--r-sm);
+  display: flex;
+  gap: 10px;
+  animation: fadeSlide 0.2s ease;
+}
+.wl-log-row.done { color: var(--rose); border-left: 2px solid var(--rose); }
+.wl-log-iter { color: var(--text-3); }
+.wl-log-body { flex: 1; }
+.wl-log-result { }
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── LIST COMPREHENSION WIDGET ─────────────────────── */
+.lc-stage {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 80px 1fr;
+  gap: 0;
+  align-items: start;
+  min-height: 240px;
+}
+
+.lc-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 8px;
+}
+.lc-col-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.lc-middle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 28px;
+  gap: 6px;
+}
+.lc-filter-box {
+  background: var(--ink-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  text-align: center;
+  line-height: 1.5;
+  width: 72px;
+}
+.lc-filter-box .kw { color: var(--text-3); }
+.lc-filter-box .cond { color: var(--amber); }
+.lc-arrow {
+  font-size: 14px;
+  color: var(--text-3);
+}
+
+.lc-item {
+  background: var(--ink-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  padding: 8px 12px;
+  font-family: var(--mono);
+  font-size: 13px;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+}
+.lc-item.source  { color: var(--text-2); }
+.lc-item.active  { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); transform: scale(1.04); }
+.lc-item.passing { border-color: var(--teal);  color: var(--teal);  background: var(--teal-dim); }
+.lc-item.failing { border-color: var(--rose);  color: var(--rose);  background: var(--rose-dim); opacity: 0.4; }
+.lc-item.result  { border-color: var(--teal);  color: var(--teal);  background: var(--teal-dim); animation: popIn 0.25s ease; }
+.lc-item.empty   { color: var(--text-3); border-style: dashed; font-size: 11px; }
+.lc-item.idle    { color: var(--text-2); }
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.lc-expression {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-2);
+  background: var(--ink-3);
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--amber);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+.lc-expression .kw  { color: var(--text-3); }
+.lc-expression .var { color: var(--amber); }
+.lc-expression .cond{ color: var(--teal); }
+.lc-expression .res { color: var(--text); }
+
+.lc-select {
+  background: var(--ink-4);
+  border: 1px solid var(--rule-2);
+  color: var(--text-2);
+  border-radius: var(--r-sm);
+  padding: 6px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  outline: none;
+  cursor: pointer;
+}
+.lc-select:focus { border-color: var(--amber); }
+</style>
+</head>
+<body>
+
+<h1><em>Lecture</em> — concept widgets · Day 1 · Python</h1>
+
+<!-- ── WHILE LOOP ──────────────────────────────────────────────────────────── -->
+<div class="widget" id="w-while">
+  <div class="widget-label">Concept 2 of 4</div>
+  <div class="widget-title">while loops</div>
+
+  <div class="stage">
+    <!-- condition display -->
+    <div class="wl-condition" id="wl-condition">
+      <span class="wl-keyword">while</span>
+      <span class="wl-var">count</span>
+      <span class="wl-op">&lt;</span>
+      <span class="wl-thresh" id="wl-thresh-display">5</span>
+      <span class="wl-result true" id="wl-result-badge">True ✓</span>
+    </div>
+
+    <!-- track -->
+    <div class="wl-track-wrap">
+      <div class="wl-track-label">
+        <span>count = <span id="wl-count-label">0</span></span>
+        <span>threshold = <span id="wl-thresh-label">5</span></span>
+      </div>
+      <div class="wl-track">
+        <div class="wl-fill" id="wl-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- step log -->
+    <div class="wl-log" id="wl-log"></div>
+  </div>
+
+  <div class="controls">
+    <button class="btn primary" id="wl-play-btn" onclick="wlPlay()">▶ Run</button>
+    <button class="btn" onclick="wlStep()" id="wl-step-btn">Step →</button>
+    <button class="btn" onclick="wlReset()">↺ Reset</button>
+    <div class="ctrl-spacer"></div>
+    <div class="ctrl-group">
+      threshold
+      <input type="range" min="2" max="10" value="5" id="wl-thresh" oninput="wlSetThresh(this.value)">
+      <span class="ctrl-val" id="wl-thresh-val">5</span>
+    </div>
+    <div class="ctrl-group">
+      speed
+      <input type="range" min="1" max="5" value="3" id="wl-speed">
+    </div>
+  </div>
+
+  <div class="caption">
+    A <strong>while loop</strong> runs its body over and over as long as the condition is <code>True</code>.
+    The moment <code>count</code> reaches the threshold, the condition becomes <code>False</code> — and the loop stops.
+    Try increasing the threshold, then watch what happens if you forget to increment <code>count</code>: the condition never becomes false and the loop runs forever.
+    <br><br>
+    <code>count = 0<br>while count &lt; 5:<br>&nbsp;&nbsp;&nbsp;&nbsp;print(count)<br>&nbsp;&nbsp;&nbsp;&nbsp;count = count + 1</code>
+  </div>
+</div>
+
+<!-- ── LIST COMPREHENSION ─────────────────────────────────────────────────── -->
+<div class="widget" id="w-lc">
+  <div class="widget-label">Concept 4 of 4</div>
+  <div class="widget-title">list comprehensions</div>
+
+  <div class="stage" style="padding:24px;">
+    <!-- expression display -->
+    <div class="lc-expression" id="lc-expr">
+      <span class="res">result</span> <span class="kw">=</span>
+      [<span class="var">x</span>
+      <span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span>
+      <span class="res">numbers</span>
+      <span class="kw">if</span> <span class="cond">x % 2 == 0</span>]
+    </div>
+
+    <div class="lc-stage">
+      <!-- source list -->
+      <div class="lc-col">
+        <div class="lc-col-label">source</div>
+        <div id="lc-source"></div>
+      </div>
+
+      <!-- middle: filter -->
+      <div class="lc-middle">
+        <div class="lc-filter-box">
+          <span class="kw">if</span><br>
+          <span class="cond" id="lc-cond-display">x % 2<br>== 0</span>
+        </div>
+        <div class="lc-arrow">↓</div>
+      </div>
+
+      <!-- result list -->
+      <div class="lc-col">
+        <div class="lc-col-label">result</div>
+        <div id="lc-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn primary" id="lc-play-btn" onclick="lcPlay()">▶ Run</button>
+    <button class="btn" onclick="lcStep()" id="lc-step-btn">Step →</button>
+    <button class="btn" onclick="lcReset()">↺ Reset</button>
+    <div class="ctrl-spacer"></div>
+    <div class="ctrl-group">
+      list
+      <select class="lc-select" id="lc-list-sel" onchange="lcChangeList()">
+        <option value="nums">numbers 1–8</option>
+        <option value="prices">prices</option>
+        <option value="scores">scores</option>
+      </select>
+    </div>
+    <div class="ctrl-group">
+      filter
+      <select class="lc-select" id="lc-cond-sel" onchange="lcChangeCond()">
+        <option value="even">even numbers</option>
+        <option value="gt">value &gt; 50</option>
+        <option value="pass">score ≥ 60</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="caption">
+    A <strong>list comprehension</strong> builds a new list by looping through an existing one and (optionally) filtering items.
+    Read it left to right: <code>x</code> is each item, <code>for x in numbers</code> is the loop, <code>if x % 2 == 0</code> is the filter — only even items make it through.
+    Items that fail the condition are dropped (shown in red). Items that pass land in the result list (shown in teal).
+    <br><br>
+    Try changing the list and filter above to see how the same pattern applies to different data.
+  </div>
+</div>
+
+<script>
+// ── WHILE LOOP ──────────────────────────────────────────────────────────────
+
+let wlCount     = 0;
+let wlThresh    = 5;
+let wlRunning   = false;
+let wlInterval  = null;
+let wlDone      = false;
+
+function wlSpeed() {
+  const v = parseInt(document.getElementById('wl-speed').value);
+  return [800, 550, 350, 200, 80][v - 1];
+}
+
+function wlSetThresh(v) {
+  wlThresh = parseInt(v);
+  document.getElementById('wl-thresh-val').textContent = v;
+  document.getElementById('wl-thresh-display').textContent = v;
+  document.getElementById('wl-thresh-label').textContent = v;
+  if (!wlRunning) wlUpdateDisplay();
+}
+
+function wlUpdateDisplay() {
+  const pct = Math.min((wlCount / wlThresh) * 100, 100);
+  const fill = document.getElementById('wl-fill');
+  fill.style.width = pct + '%';
+
+  const cond = wlCount < wlThresh;
+  fill.classList.toggle('danger', !cond);
+
+  document.getElementById('wl-count-label').textContent = wlCount;
+  document.getElementById('wl-thresh-label').textContent = wlThresh;
+  document.getElementById('wl-thresh-display').textContent = wlThresh;
+
+  const badge = document.getElementById('wl-result-badge');
+  if (cond) {
+    badge.textContent = 'True ✓';
+    badge.className = 'wl-result true';
+  } else {
+    badge.textContent = 'False ✗';
+    badge.className = 'wl-result false';
+  }
+}
+
+function wlAddLog(iter, body, result, isDone) {
+  const log = document.getElementById('wl-log');
+  const row = document.createElement('div');
+  row.className = 'wl-log-row' + (isDone ? ' done' : '');
+  row.innerHTML = `<span class="wl-log-iter">#${iter}</span><span class="wl-log-body">${body}</span><span class="wl-log-result">${result}</span>`;
+  log.appendChild(row);
+  log.scrollTop = log.scrollHeight;
+}
+
+function wlStep() {
+  if (wlDone) return;
+  if (wlCount >= wlThresh) {
+    wlAddLog('—', `count (${wlCount}) &lt; ${wlThresh}`, '→ False — loop ends', true);
+    wlDone = true;
+    wlUpdateDisplay();
+    document.getElementById('wl-step-btn').disabled = true;
+    document.getElementById('wl-play-btn').disabled = true;
+    return;
+  }
+  wlAddLog(wlCount, `count = ${wlCount} → print(${wlCount})`, `count becomes ${wlCount + 1}`);
+  wlCount++;
+  wlUpdateDisplay();
+  if (wlCount >= wlThresh) {
+    // next step will show the false condition
+  }
+}
+
+function wlPlay() {
+  if (wlRunning) {
+    clearInterval(wlInterval);
+    wlRunning = false;
+    document.getElementById('wl-play-btn').textContent = '▶ Run';
+    return;
+  }
+  if (wlDone) { wlReset(); return; }
+  wlRunning = true;
+  document.getElementById('wl-play-btn').textContent = '⏸ Pause';
+  wlInterval = setInterval(() => {
+    wlStep();
+    if (wlDone) {
+      clearInterval(wlInterval);
+      wlRunning = false;
+      document.getElementById('wl-play-btn').textContent = '↺ Replay';
+    }
+  }, wlSpeed());
+}
+
+function wlReset() {
+  clearInterval(wlInterval);
+  wlRunning = false;
+  wlDone = false;
+  wlCount = 0;
+  document.getElementById('wl-log').innerHTML = '';
+  document.getElementById('wl-play-btn').textContent = '▶ Run';
+  document.getElementById('wl-play-btn').disabled = false;
+  document.getElementById('wl-step-btn').disabled = false;
+  wlUpdateDisplay();
+}
+
+// ── LIST COMPREHENSION ──────────────────────────────────────────────────────
+
+const lcLists = {
+  nums:   { label: 'numbers',  items: [1,2,3,4,5,6,7,8] },
+  prices: { label: 'prices',   items: [12, 85, 7, 43, 120, 5, 60, 31] },
+  scores: { label: 'scores',   items: [45, 82, 61, 38, 90, 55, 73, 66] },
+};
+
+const lcConds = {
+  even: { label: 'x % 2 == 0', display: 'x % 2\n== 0',  test: x => x % 2 === 0, expr: 'x % 2 == 0' },
+  gt:   { label: 'x > 50',     display: 'x > 50',        test: x => x > 50,       expr: 'x > 50'    },
+  pass: { label: 'x >= 60',    display: 'x >= 60',       test: x => x >= 60,      expr: 'x >= 60'   },
+};
+
+let lcListKey = 'nums';
+let lcCondKey = 'even';
+let lcStep_i  = -1;  // -1 = not started
+let lcRunning = false;
+let lcInterval= null;
+let lcResults = [];
+
+function lcCurrentList() { return lcLists[lcListKey]; }
+function lcCurrentCond() { return lcConds[lcCondKey]; }
+
+function lcRenderSource(activeIdx) {
+  const items = lcCurrentList().items;
+  const src = document.getElementById('lc-source');
+  src.innerHTML = items.map((v, i) => {
+    let cls = 'lc-item source idle';
+    if (lcStep_i === -1) cls = 'lc-item source idle';
+    else if (i < lcStep_i) cls = lcCurrentCond().test(v) ? 'lc-item passing' : 'lc-item failing';
+    else if (i === lcStep_i) cls = 'lc-item active';
+    else cls = 'lc-item source idle';
+    return `<div class="${cls}" id="lc-src-${i}">${v}</div>`;
+  }).join('');
+}
+
+function lcRenderResult() {
+  const res = document.getElementById('lc-result');
+  const items = lcCurrentList().items;
+  const slots = items.length;
+  let html = lcResults.map(v => `<div class="lc-item result">${v}</div>`).join('');
+  const remaining = slots - lcResults.length;
+  if (remaining > 0 && lcStep_i < items.length) {
+    html += `<div class="lc-item empty">…</div>`;
+  }
+  res.innerHTML = html || '<div class="lc-item empty" style="font-size:11px;">empty so far</div>';
+}
+
+function lcUpdateExpr() {
+  const list = lcCurrentList();
+  const cond = lcCurrentCond();
+  document.getElementById('lc-expr').innerHTML = `
+    <span style="color:var(--text)">result</span> <span style="color:var(--text-3)">=</span>
+    [<span style="color:var(--amber)">x</span>
+    <span style="color:var(--text-3)">for</span> <span style="color:var(--amber)">x</span>
+    <span style="color:var(--text-3)">in</span> <span style="color:var(--text)">${list.label}</span>
+    <span style="color:var(--text-3)">if</span> <span style="color:var(--teal)">${cond.label}</span>]`;
+  document.getElementById('lc-cond-display').innerHTML =
+    `<span style="color:var(--teal)">${cond.display.replace('\n','<br>')}</span>`;
+}
+
+function lcReset() {
+  clearInterval(lcInterval);
+  lcRunning = false;
+  lcStep_i = -1;
+  lcResults = [];
+  document.getElementById('lc-play-btn').textContent = '▶ Run';
+  document.getElementById('lc-play-btn').disabled = false;
+  document.getElementById('lc-step-btn').disabled = false;
+  lcRenderSource(-1);
+  lcRenderResult();
+  lcUpdateExpr();
+}
+
+function lcDoStep() {
+  const items = lcCurrentList().items;
+  if (lcStep_i >= items.length) return;
+  lcStep_i++;
+  if (lcStep_i >= items.length) {
+    // done
+    document.getElementById('lc-play-btn').textContent = '↺ Replay';
+    document.getElementById('lc-play-btn').disabled = false;
+    document.getElementById('lc-step-btn').disabled = true;
+    clearInterval(lcInterval);
+    lcRunning = false;
+    lcRenderSource();
+    lcRenderResult();
+    return;
+  }
+  const v = items[lcStep_i];
+  if (lcCurrentCond().test(v)) lcResults.push(v);
+  lcRenderSource();
+  lcRenderResult();
+}
+
+function lcStep() {
+  if (lcStep_i >= lcCurrentList().items.length) return;
+  lcDoStep();
+}
+
+function lcPlay() {
+  if (lcRunning) {
+    clearInterval(lcInterval);
+    lcRunning = false;
+    document.getElementById('lc-play-btn').textContent = '▶ Run';
+    return;
+  }
+  if (lcStep_i >= lcCurrentList().items.length) { lcReset(); return; }
+  lcRunning = true;
+  document.getElementById('lc-play-btn').textContent = '⏸ Pause';
+  lcInterval = setInterval(() => {
+    lcDoStep();
+    if (lcStep_i >= lcCurrentList().items.length) {
+      clearInterval(lcInterval);
+      lcRunning = false;
+    }
+  }, 420);
+}
+
+function lcChangeList() {
+  lcListKey = document.getElementById('lc-list-sel').value;
+  // match a sensible default condition
+  if (lcListKey === 'scores') {
+    lcCondKey = 'pass';
+    document.getElementById('lc-cond-sel').value = 'pass';
+  } else if (lcListKey === 'prices') {
+    lcCondKey = 'gt';
+    document.getElementById('lc-cond-sel').value = 'gt';
+  } else {
+    lcCondKey = 'even';
+    document.getElementById('lc-cond-sel').value = 'even';
+  }
+  lcReset();
+}
+
+function lcChangeCond() {
+  lcCondKey = document.getElementById('lc-cond-sel').value;
+  lcReset();
+}
+
+// ── INIT ────────────────────────────────────────────────────────────────────
+wlUpdateDisplay();
+lcReset();
+</script>
+</body>
+</html>
